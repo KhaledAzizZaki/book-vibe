@@ -8,17 +8,40 @@ import Books from "../../component/books/Books";
 
 const ListedBooks = () => {
   const [readList, setReadList] = useState([]);
+  const [sort, setSort] = useState([]);
+
   const data = useLoaderData();
 
   useEffect(() => {
     const storedBookData = getStoredBook();
+
     const ConvertedStoredBooks = storedBookData.map((id) => parseInt(id));
+
     const myReadList = data.filter((book) =>
       ConvertedStoredBooks.includes(book.bookId)
     );
+
     setReadList(myReadList);
   }, []);
-  console.log(readList);
+
+  // console.log(readList);
+
+  const handleSort = (type) => {
+    setSort(type);
+
+    if (type === "pages") {
+      const sortedByPage = [...readList].sort(
+        (a, b) => a.totalPages - b.totalPages
+      );
+      // console.log(sortedByPage);
+      setReadList(sortedByPage);
+    }
+    if (type === "ratings") {
+      const sortedByPage = [...readList].sort((a, b) => a.rating - b.rating);
+      setReadList(sortedByPage);
+    }
+  };
+
   return (
     <div className="w-10/12 mx-auto">
       <h1 className=" bg-gray-100 text-center rounded-2xl my-8 font-bold text-3xl py-8">
@@ -31,17 +54,17 @@ const ListedBooks = () => {
             role="button"
             className="btn m-1 bg-lime-500 text-white"
           >
-            Sort By
+            Sort By : {sort ? sort : ""}
           </div>
           <ul
             tabIndex={0}
             className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
           >
             <li>
-              <a>1</a>
+              <a onClick={() => handleSort("ratings")}>Ratings</a>
             </li>
             <li>
-              <a>2</a>
+              <a onClick={() => handleSort("pages")}>Pages</a>
             </li>
           </ul>
         </div>
@@ -54,7 +77,6 @@ const ListedBooks = () => {
           </TabList>
 
           <TabPanel>
-            <h2>This is Read Books {readList.length}</h2>
             {readList.map((data) => (
               <Books key={data.bookId} data={data}></Books>
             ))}

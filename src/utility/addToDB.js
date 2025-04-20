@@ -1,3 +1,8 @@
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
 const getStoredBook = () => {
   const storedBookSTR = localStorage.getItem("readList");
 
@@ -13,7 +18,8 @@ const addToStoredDB = (id) => {
   const storedBookData = getStoredBook();
 
   if (storedBookData.includes(id)) {
-    alert("Already exist");
+    // alert("Already exist");
+    MySwal.fire("Already Exist!");
   } else {
     storedBookData.push(id);
     const data = JSON.stringify(storedBookData);
